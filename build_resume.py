@@ -211,7 +211,8 @@ def build():
     for section in resume["sections"]:
         render_section(pdf, section)
 
-    output = HERE / f"Resume - {resume['name']}.pdf"
+    name_fmt = "".join(word.capitalize() for word in resume['name'].split())
+    output = HERE / f"Resume-{name_fmt}.pdf"
     pdf.output(str(output))
     print(f"Wrote {output}")
 
