@@ -1,115 +1,22 @@
 """Build the ATS-safe resume as a single-column PDF.
 
-Content lives in this file. Fonts are Exo 2 and Montserrat in fonts/.
+Content lives in resume.yaml. Fonts are Exo 2 and Montserrat in fonts/.
 
     python3 build_resume.py
 """
 
 from pathlib import Path
 
+import yaml
 from fpdf import FPDF
 
 HERE = Path(__file__).parent
+CONTENT = HERE / "resume.yaml"
 OUTPUT = HERE / "Resume.pdf"
 
 ACCENT = (1, 127, 124)
 INK = (38, 38, 38)
 BODY = (89, 89, 89)
-
-PHONE = "+91 94640 62104"
-EMAIL = "sarbjit212@gmail.com"
-LOCATION = "Mohali, Punjab, India"
-
-TAGLINE = (
-    "Technology Leader & Former CTO  |  Engineering Leadership  |  "
-    "Full-Stack & Cloud Architecture"
-)
-
-SUMMARY = (
-    "Technology leader and former Chief Technology Officer with 13+ years of experience "
-    "building and scaling high-traffic content, e-commerce and SaaS platforms. Now a "
-    "Senior Consultant at Webedia; previously CTO of Local Verticals until its merger "
-    "into Webedia, owning architecture, AWS infrastructure and product delivery across "
-    "a portfolio of websites. Earlier, Staff Software Engineer at Replicon on "
-    "the Polaris PSA/PPM suite (React, GraphQL, ASP.NET). Hands-on full-stack leader "
-    "with a track record of cutting page load times by 60%, building serverless media "
-    "pipelines, and shipping recommendation and experimentation systems that keep "
-    "readers engaged."
-)
-
-EXPERIENCE = [
-    {
-        "title": "Senior Consultant",
-        "company": "Webedia",
-        "dates": "March 2025 – Present",
-        "context": "Joined Webedia when Local Verticals merged into the group.",
-        "bullets": [
-            ("Platform continuity", "Continue to own the CMS, e-commerce platform and AWS infrastructure for the former Local Verticals sites within Webedia."),
-            ("Technical advisory", "Handled architecture, performance and cloud infrastructure for the merged portfolio."),
-        ],
-    },
-    {
-        "title": "Chief Technology Officer",
-        "company": "Local Verticals (formerly Agile Media Lab)",
-        "dates": "February 2023 – March 2025",
-        "context": (
-            "Agile Media Lab split in two: Webedia acquired the larger business, and "
-            "the remaining sites continued as Local Verticals, which later merged "
-            "into Webedia."
-        ),
-        "bullets": [
-            ("Technology leadership", "Owned technology strategy, architecture and engineering delivery for a portfolio of content and e-commerce websites, from roadmap to production."),
-            ("Platform ownership", "Ran and evolved the in-house next-generation CMS and e-commerce platform that powered every site in the portfolio."),
-            ("Cloud & reliability", "Managed AWS infrastructure (Lambda, S3, CloudFront) with Nginx and Varnish caching and Docker/Jenkins deployments, keeping sites fast and hosting costs low."),
-            ("Social distribution", "Extended the automated social sharing service to publish articles to Facebook, X (Twitter) and Bluesky."),
-            ("Team & process", "Led and mentored the engineering team; set coding standards, code review and release practices."),
-        ],
-    },
-    {
-        "title": "Staff Software Engineer",
-        "company": "Replicon",
-        "dates": "April 2022 – February 2023",
-        "bullets": [
-            ("Polaris PSA/PPM", "Built features for Replicon's professional services automation suite, which helps enterprises manage resources, tasks, finances and project planning, using React, GraphQL and ASP.NET."),
-        ],
-    },
-    {
-        "title": "Technical Lead",
-        "company": "Agile Media Lab Pvt. Ltd. / Aristeia Services (business later acquired by Webedia)",
-        "dates": "July 2013 – April 2022",
-        "context": "Led engineering for a portfolio of high-traffic content and e-commerce websites.",
-        "bullets": [
-            ("In-house CMS", "Architected and built a next-generation CMS and e-commerce web application used across all company sites."),
-            ("Performance", "Cut page load time by 60% with device-specific page load optimizations."),
-            ("Microservices", "Decoupled the database layer into a RESTful microservice API using Domain-Driven Design so the platform could scale."),
-            ("Image pipeline", "Built a serverless thumbnail generator on AWS Lambda, S3 and CloudFront."),
-            ("Recommendations", "Built a TF-IDF content recommendation engine to surface related articles."),
-            ("Experimentation", "Built A/B testing for article titles and comments to find the best-performing variants."),
-            ("Affiliate e-commerce", "Automated affiliate link handling across e-commerce sites and integrated Amazon product search into the CMS."),
-            ("Social automation", "Built a fully automated service that shares new blog articles to social networks."),
-            ("Newsletters", "Built a custom newsletter service that tracks and delivers the latest blog activity to subscribers."),
-            ("Mobile", "Shipped an Android app built with React Native."),
-        ],
-    },
-]
-
-OPEN_SOURCE = [
-    ("Async Tracer", "Node.js library for tracing async functions, conforming to the OpenTracing standard."),
-]
-
-SKILLS = [
-    ("Languages", "JavaScript, PHP, Python"),
-    ("Frontend & Mobile", "React, Next.js, React Native"),
-    ("Backend & APIs", "Node.js, Laravel, Symfony, ASP.NET, GraphQL, RESTful APIs, Microservices, Domain-Driven Design"),
-    ("Cloud & DevOps", "AWS (Lambda, S3, CloudFront), Docker, Jenkins, Nginx, Apache, Varnish"),
-    ("Data, CMS & Ad Tech", "MySQL, WordPress, Prebid.js"),
-    ("Product Engineering", "Web performance optimization, A/B testing, recommendation systems (TF-IDF)"),
-    ("Leadership", "Technology strategy, team leadership & mentoring, strategic planning & execution, risk management"),
-]
-
-EDUCATION = ("Bachelor's degree", "Punjab Engineering College (PEC), Chandigarh", "2008 – 2012")
-
-INTERESTS = "Bike riding, 3D printing & CNC, UAVs (drones), electronics, cooking, singing"
 
 FONT_FILES = {
     ("Exo2", ""): "Exo2-Regular.ttf",
@@ -229,54 +136,80 @@ class Resume(FPDF):
             self.bullet(label, text)
 
 
+def plain(value: str) -> str:
+    """Folded YAML keeps a trailing newline. Collapse it to a single line."""
+    return " ".join(value.split())
+
+
+def load_resume(path: Path) -> dict:
+    data = yaml.safe_load(path.read_text())
+    missing = [key for key in ("name", "tagline", "contact", "sections") if key not in data]
+    if missing:
+        raise SystemExit(f"{path.name} is missing: {', '.join(missing)}")
+    contact = data["contact"]
+    for key in ("location", "phone", "email"):
+        if key not in contact:
+            raise SystemExit(f"{path.name} contact is missing {key}")
+    return data
+
+
+def render_section(pdf: Resume, section: dict) -> None:
+    heading = section.get("heading")
+    if not heading:
+        raise SystemExit("Each section needs a heading")
+    pdf.section(heading)
+    if "roles" in section:
+        for role in section["roles"]:
+            role = dict(role)
+            if role.get("context"):
+                role["context"] = plain(role["context"])
+            role["bullets"] = [
+                (item["label"], plain(item["text"])) for item in role.get("bullets", [])
+            ]
+            pdf.job(role)
+    elif "bullets" in section:
+        for item in section["bullets"]:
+            pdf.bullet(item["label"], plain(item["text"]))
+    elif "degree" in section:
+        pdf._flow(
+            [
+                (section["degree"], "B", ACCENT),
+                (f", {section['school']}  |  {section['dates']}", "", BODY),
+            ],
+            line_h=4.8,
+            left=pdf.l_margin,
+        )
+    elif "body" in section:
+        pdf.body(plain(section["body"]), gap=0.2)
+    else:
+        raise SystemExit(f"Section {heading!r} has no body, roles, bullets, or degree")
+
+
 def build():
+    resume = load_resume(CONTENT)
+    contact = resume["contact"]
     pdf = Resume()
-    pdf.set_title("Resume - Sarbjit Singh")
-    pdf.set_author("Sarbjit Singh")
+    pdf.set_title(f"Resume - {resume['name']}")
+    pdf.set_author(resume["name"])
     pdf.add_page()
 
     pdf.set_font("Exo2Medium", "", 26)
     pdf.set_text_color(*INK)
-    pdf.cell(0, 11, "Sarbjit Singh", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 11, resume["name"], align="C", new_x="LMARGIN", new_y="NEXT")
 
     pdf.set_font("Exo2", "", 10)
     pdf.set_text_color(*BODY)
-    pdf.multi_cell(
-        0, 4.6, TAGLINE, align="C", new_x="LMARGIN", new_y="NEXT"
-    )
+    pdf.multi_cell(0, 4.6, resume["tagline"], align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(0.6)
 
-    contact = f"{LOCATION}   ·   {PHONE}   ·   {EMAIL}"
+    line = f"{contact['location']}   ·   {contact['phone']}   ·   {contact['email']}"
     pdf.set_x(pdf.l_margin)
     pdf.set_font("Montserrat", "", 10)
-    pdf.cell(0, 5, contact, align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 5, line, align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
-    pdf.section("Summary")
-    pdf.body(SUMMARY, gap=0.2)
-
-    pdf.section("Work Experience")
-    for role in EXPERIENCE:
-        pdf.job(role)
-
-    pdf.section("Open Source")
-    for label, text in OPEN_SOURCE:
-        pdf.bullet(label, text)
-
-    pdf.section("Technical Skills")
-    for label, text in SKILLS:
-        pdf.bullet(label, text)
-
-    pdf.section("Education")
-    degree, school, years = EDUCATION
-    pdf._flow(
-        [(degree, "B", ACCENT), (f", {school}  |  {years}", "", BODY)],
-        line_h=4.8,
-        left=pdf.l_margin,
-    )
-
-    pdf.section("Interests")
-    pdf.body(INTERESTS, gap=0)
+    for section in resume["sections"]:
+        render_section(pdf, section)
 
     pdf.output(str(OUTPUT))
     print(f"Wrote {OUTPUT}")

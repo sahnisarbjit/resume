@@ -1,0 +1,145 @@
+name: Sarbjit Singh
+tagline: Technology Leader & Former CTO  |  Engineering Leadership  |  Full-Stack & Cloud Architecture
+
+contact:
+  location: Mohali, Punjab, India
+  phone: "+91 94640 62104"
+  email: sarbjit212@gmail.com
+
+sections:
+  - heading: Summary
+    body: >
+      Technology leader and former Chief Technology Officer with 13+ years of
+      experience building and scaling high-traffic content, e-commerce and SaaS
+      platforms. Now a Senior Consultant at Webedia; previously CTO of Local
+      Verticals until its merger into Webedia, owning architecture, AWS
+      infrastructure and product delivery across a portfolio of websites.
+      Earlier, Staff Software Engineer at Replicon on the Polaris PSA/PPM suite
+      (React, GraphQL, ASP.NET). Hands-on full-stack leader with a track record
+      of cutting page load times by 60%, building serverless media pipelines,
+      and shipping recommendation and experimentation systems that keep readers
+      engaged.
+
+  - heading: Work Experience
+    roles:
+      - title: Senior Consultant
+        company: Webedia
+        dates: March 2025 – Present
+        context: Joined Webedia when Local Verticals merged into the group.
+        bullets:
+          - label: Platform continuity
+            text: >
+              Continue to own the CMS, e-commerce platform and AWS
+              infrastructure for the former Local Verticals sites within
+              Webedia.
+          - label: Technical advisory
+            text: >
+              Handled architecture, performance and cloud infrastructure for
+              the merged portfolio.
+
+      - title: Chief Technology Officer
+        company: Local Verticals (formerly Agile Media Lab)
+        dates: February 2023 – March 2025
+        context: >
+          Agile Media Lab split in two: Webedia acquired the larger business,
+          and the remaining sites continued as Local Verticals, which later
+          merged into Webedia.
+        bullets:
+          - label: Technology leadership
+            text: >
+              Owned technology strategy, architecture and engineering delivery
+              for a portfolio of content and e-commerce websites, from roadmap
+              to production.
+          - label: Platform ownership
+            text: >
+              Ran and evolved the in-house next-generation CMS and e-commerce
+              platform that powered every site in the portfolio.
+          - label: Cloud & reliability
+            text: >
+              Managed AWS infrastructure (Lambda, S3, CloudFront) with Nginx
+              and Varnish caching and Docker/Jenkins deployments, keeping sites
+              fast and hosting costs low.
+          - label: Social distribution
+            text: >
+              Extended the automated social sharing service to publish articles
+              to Facebook, X (Twitter) and Bluesky.
+          - label: Team & process
+            text: >
+              Led and mentored the engineering team; set coding standards, code
+              review and release practices.
+
+      - title: Staff Software Engineer
+        company: Replicon
+        dates: April 2022 – February 2023
+        bullets:
+          - label: Polaris PSA/PPM
+            text: >
+              Built features for Replicon's professional services automation
+              suite, which helps enterprises manage resources, tasks, finances
+              and project planning, using React, GraphQL and ASP.NET.
+
+      - title: Technical Lead
+        company: Agile Media Lab Pvt. Ltd. / Aristeia Services (business later acquired by Webedia)
+        dates: July 2013 – April 2022
+        context: Led engineering for a portfolio of high-traffic content and e-commerce websites.
+        bullets:
+          - label: In-house CMS
+            text: >
+              Architected and built a next-generation CMS and e-commerce web
+              application used across all company sites.
+          - label: Performance
+            text: Cut page load time by 60% with device-specific page load optimizations.
+          - label: Microservices
+            text: >
+              Decoupled the database layer into a RESTful microservice API
+              using Domain-Driven Design so the platform could scale.
+          - label: Image pipeline
+            text: Built a serverless thumbnail generator on AWS Lambda, S3 and CloudFront.
+          - label: Recommendations
+            text: Built a TF-IDF content recommendation engine to surface related articles.
+          - label: Experimentation
+            text: >
+              Built A/B testing for article titles and comments to find the
+              best-performing variants.
+          - label: Affiliate e-commerce
+            text: >
+              Automated affiliate link handling across e-commerce sites and
+              integrated Amazon product search into the CMS.
+          - label: Social automation
+            text: Built a fully automated service that shares new blog articles to social networks.
+          - label: Newsletters
+            text: >
+              Built a custom newsletter service that tracks and delivers the
+              latest blog activity to subscribers.
+          - label: Mobile
+            text: Shipped an Android app built with React Native.
+
+  - heading: Open Source
+    bullets:
+      - label: Async Tracer
+        text: Node.js library for tracing async functions, conforming to the OpenTracing standard.
+
+  - heading: Technical Skills
+    bullets:
+      - label: Languages
+        text: JavaScript, PHP, Python
+      - label: Frontend & Mobile
+        text: React, Next.js, React Native
+      - label: Backend & APIs
+        text: Node.js, Laravel, Symfony, ASP.NET, GraphQL, RESTful APIs, Microservices, Domain-Driven Design
+      - label: Cloud & DevOps
+        text: AWS (Lambda, S3, CloudFront), Docker, Jenkins, Nginx, Apache, Varnish
+      - label: Data, CMS & Ad Tech
+        text: MySQL, WordPress, Prebid.js
+      - label: Product Engineering
+        text: Web performance optimization, A/B testing, recommendation systems (TF-IDF)
+      - label: Leadership
+        text: Technology strategy, team leadership & mentoring, strategic planning & execution, risk management
+
+  - heading: Education
+    degree: Bachelor's degree
+    school: Punjab Engineering College (PEC), Chandigarh
+    dates: 2008 – 2012
+
+  - heading: Interests
+    body: Bike riding, 3D printing & CNC, UAVs (drones), electronics, cooking, singing
