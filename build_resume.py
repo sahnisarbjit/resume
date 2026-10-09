@@ -12,7 +12,6 @@ from fpdf import FPDF
 
 HERE = Path(__file__).parent
 CONTENT = HERE / "resume.yaml"
-OUTPUT = HERE / "Resume.pdf"
 
 ACCENT = (1, 127, 124)
 INK = (38, 38, 38)
@@ -191,6 +190,7 @@ def build():
     pdf = Resume()
     pdf.set_title(f"Resume - {resume['name']}")
     pdf.set_author(resume["name"])
+    pdf.set_subject("Resume (CV)")
     pdf.add_page()
 
     pdf.set_font("Exo2Medium", "", 26)
@@ -211,8 +211,9 @@ def build():
     for section in resume["sections"]:
         render_section(pdf, section)
 
-    pdf.output(str(OUTPUT))
-    print(f"Wrote {OUTPUT}")
+    output = HERE / f"Resume - {resume['name']}.pdf"
+    pdf.output(str(output))
+    print(f"Wrote {output}")
 
 
 if __name__ == "__main__":

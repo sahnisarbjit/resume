@@ -1,6 +1,6 @@
 # Sarbjit Singh — Resume
 - `resume.yaml` — name, contact, and every section. Edit this.
-- `Resume.pdf` — generated resume for applications.
+- `Resume - <name>.pdf` — generated resume. The name comes from `name` in `resume.yaml`.
 - `build_resume.py` — layout only. Reads `resume.yaml` and writes the PDF.
 - `fonts/` — Exo 2 and Montserrat files used by the PDF.
 - `original/` — the earlier Word resume. The script does not read it.
