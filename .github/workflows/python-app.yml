@@ -30,7 +30,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         short_sha="${GITHUB_SHA::7}"
-        pdf=$(printf '%s\n' Resume\ -\ *.pdf)
+        pdf=$(printf '%s\n' Resume-*.pdf)
         gh release create "resume-${short_sha}" "$pdf" \
           --repo "$GITHUB_REPOSITORY" \
           --title "Resume ${short_sha}" \
