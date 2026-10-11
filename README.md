@@ -7,7 +7,6 @@
 - `build_resume.py` — layout only. Reads `resume.yaml` and writes the PDF.
 - `requirements.txt` — Python packages needed by `build_resume.py`.
 - `fonts/` — Exo 2 and Montserrat files used by the PDF.
-- `original/` — the earlier Word resume. The script does not read it.
 
 ## Python Setup
 ```bash
