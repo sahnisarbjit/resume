@@ -133,13 +133,17 @@ class Resume(FPDF):
         return self._flow_height(spans, self.BULLET_LINE_H, left) + 0.7
 
     def bullet(self, label, text, url=None):
+        self.bullet_flow(self._bullet_spans(label, text, url))
+
+    def bullet_flow(self, spans):
         line_h = self.BULLET_LINE_H
         mark = self.BULLET_MARK
-        self._keep_together(self.bullet_height(label, text, url))
+        left = self.l_margin + mark
+        self._keep_together(self._flow_height(spans, line_h, left) + 0.7)
         self.set_font("Montserrat", "", 24)
         self.set_text_color(*BODY)
         self.cell(mark, line_h, "•")
-        self._flow(self._bullet_spans(label, text, url), line_h=line_h, left=self.l_margin + mark)
+        self._flow(spans, line_h=line_h, left=left)
         self.ln(0.7)
 
     def link_line(self, urls, separator, line_h=5):
@@ -196,6 +200,13 @@ def plain(value: str) -> str:
     return " ".join(value.split())
 
 
+def degree_spans(degree: dict) -> list:
+    return [
+        (degree["degree"], "B", ACCENT),
+        (f", {degree['school']}  |  {degree['dates']}", "", BODY),
+    ]
+
+
 def load_resume(path: Path) -> dict:
     data = yaml.safe_load(path.read_text())
     missing = [key for key in ("name", "tags", "contact", "sections") if key not in data]
@@ -230,19 +241,21 @@ def render_section(pdf: Resume, section: dict) -> None:
     elif "bullets" in section:
         for item in section["bullets"]:
             pdf.bullet(item["label"], plain(item["text"]), item.get("url"))
-    elif "degree" in section:
-        pdf._flow(
-            [
-                (section["degree"], "B", ACCENT),
-                (f", {section['school']}  |  {section['dates']}", "", BODY),
-            ],
-            line_h=4.8,
-            left=pdf.l_margin,
-        )
+    elif "degrees" in section or "degree" in section:
+        degrees = section.get("degrees") or [section]
+        for degree in degrees:
+            missing = [key for key in ("degree", "school", "dates") if key not in degree]
+            if missing:
+                raise SystemExit(f"Section {heading!r} degree is missing: {', '.join(missing)}")
+        if len(degrees) == 1:
+            pdf._flow(degree_spans(degrees[0]), line_h=4.8, left=pdf.l_margin)
+        else:
+            for degree in degrees:
+                pdf.bullet_flow(degree_spans(degree))
     elif "body" in section:
         pdf.body(plain(section["body"]), gap=0.2)
     else:
-        raise SystemExit(f"Section {heading!r} has no body, roles, bullets, or degree")
+        raise SystemExit(f"Section {heading!r} has no body, roles, bullets, degree, or degrees")
 
 
 def build():

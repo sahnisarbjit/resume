@@ -168,9 +168,10 @@ sections:
         text: Engineering leadership & mentoring, hiring, technology strategy, technical due diligence, M&A platform integration
 
   - heading: Education
-    degree: B.Tech. in Mechanical Engineering
-    school: Punjab Engineering College, Chandigarh
-    dates: 2008 – 2012
+    degrees:
+      - degree: B.Tech. in Mechanical Engineering
+        school: Punjab Engineering College, Chandigarh
+        dates: 2008 – 2012
 
   - heading: Interests
     body: Bike riding and hardware projects (3D printing, CNC, drones, model aircraft, electronics, IoT)
